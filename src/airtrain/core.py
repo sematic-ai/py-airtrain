@@ -1,5 +1,5 @@
 from dataclasses import dataclass, fields
-from typing import Any, Iterable, Union
+from typing import Any, Dict, Iterable, Union
 
 
 @dataclass
@@ -19,7 +19,7 @@ class DatasetMetadata:
 
 
 def upload_from_dicts(
-    data: Iterable[dict[str, Any]],
+    data: Iterable[Dict[str, Any]],
     name: Union[str, None] = None,
     embedding_column: Union[str, None] = None,
 ) -> DatasetMetadata:
