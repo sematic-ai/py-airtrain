@@ -27,9 +27,6 @@
   <a href="https://docs.python.org/3.12/" target="_blank">
     <img height="30px" src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
-  <a href="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml?query=branch%3Amain+" target="_blank">
-    <img height="30px" src="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status">
-  </a>
 </p>
 
 
@@ -51,7 +48,7 @@ Then you may upload a new dataset as follows:
 import airtrain as at
 
 # Can also be set with the environment variable AIRTRAIN_API_KEY
-at.api_key = "sUpErSeCr3t"
+at.set_api_key("sUpErSeCr3t")
 
 url = at.upload_from_dicts(
     [

@@ -4,7 +4,17 @@ PY_VERSION := "3.11"
 
 .PHONY: wheel
 wheel:
+	rm -rf dist build src/*.egg-info
 	uvx pip wheel -w dist .
+.PHONY: test-release
+test-release: wheel
+	uvx twine check dist/*airtrain*.whl
+	uvx twine upload --repository testpypi dist/*airtrain*.whl
+
+.PHONY: release
+release: wheel
+	uvx twine check dist/*airtrain*.whl
+	uvx twine upload dist/*airtrain*.whl
 
 .PHONY: test-release
 test-release: wheel
