@@ -1,0 +1,22 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test-python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up python ${{ matrix.python-version }}
+        run: make py-prep PY_VERSION=${{ matrix.python-version }}
+        
+      - name: Run static analysis
+        run: make lint
+
+      - name: Run tests
+        run: make test
