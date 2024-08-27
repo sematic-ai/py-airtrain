@@ -11,6 +11,14 @@ license = {file = "LICENSE"}
 dependencies = [
   "httpx>=0.25.0",
   "pyarrow>=13.0.0",
+  
+  # pyarrow requires numpy. Numpy version support is a bit
+  # complicated and isn't handled well transiently. This makes
+  # sure we support the broadest numpy dependency set possible.
+  "numpy>=1.26.0; python_version >= '3.12'",
+  "numpy<=1.24.4; python_version == '3.8'",
+  "numpy>=1.19.3; python_version >= '3.9'",
+  
   "airtrain",
 ]
 

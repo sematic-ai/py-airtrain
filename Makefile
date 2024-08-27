@@ -12,7 +12,6 @@ py-prep:
 	rm -rf ".venv" || echo "No virtualenv yet"
 	uv venv --python $(PY_VERSION)
 	uv tool install --force ruff==0.6.1
-	if [ "$(PY_VERSION)" = "3.12" ]; then uv add numpy>=1.26.0; fi
 	uv add --editable .
 
 
