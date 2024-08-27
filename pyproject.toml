@@ -76,3 +76,7 @@ enabled = true
 [[tool.mypy.overrides]]
 module = "airtrain.*"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pyarrow.*"
+ignore_missing_imports = true
