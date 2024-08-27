@@ -13,7 +13,9 @@ class DatasetMetadata:
         for field in fields(self):
             value = getattr(self, field.name)
             if not isinstance(value, field.type):
-                raise ValueError(f"Field '{field.name}' must be {field.type}. Got: '{value}'")
+                raise ValueError(
+                    f"Field '{field.name}' must be {field.type}. Got: '{value}'"
+                )
 
 
 def upload_from_dicts(
