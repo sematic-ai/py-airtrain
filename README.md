@@ -1,3 +1,7 @@
+<h1 align="center">
+  <img src="images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="200px">
+</h1>
+
 # Airtrain SDK
 
 This repository holds the SDK for interacting with
