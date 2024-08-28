@@ -3,6 +3,9 @@
 </div>
 
 <p align="center">
+  <a href="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml?query=branch%3Amain+" target="_blank">
+    <img src="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status">
+  </a>
   <a href="https://airtrain.ai" target="_blank">
     <img src="https://img.shields.io/badge/Made_by-Airtrain_🚀-blue?style=for-the-badge&logo=none" alt="Made by Airtrain">
   </a>
