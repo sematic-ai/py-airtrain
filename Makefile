@@ -6,6 +6,16 @@ PY_VERSION := "3.11"
 wheel:
 	uvx pip wheel -w dist .
 
+.PHONY: test-release
+test-release: wheel
+	uvx twine check dist/*airtrain*.whl
+	uvx twine upload --repository testpypi dist/*airtrain*.whl
+
+.PHONY: release
+test-release: wheel
+	uvx twine check dist/*airtrain*.whl
+	uvx twine upload dist/*airtrain*.whl
+
 .PHONY: py-prep
 py-prep:
 	uv --version || curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -14,11 +24,9 @@ py-prep:
 	uv tool install --force ruff==0.6.1
 	uv add --editable .
 
-
 .PHONY: sync
 sync:
 	uv sync
-
 
 .PHONY: fix
 fix:
