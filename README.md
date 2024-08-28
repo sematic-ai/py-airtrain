@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="200px">
+  <img src="images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="150px">
 </h1>
 
 # Airtrain SDK
