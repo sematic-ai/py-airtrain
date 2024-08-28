@@ -2,6 +2,25 @@
   <img src="images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="150px">
 </div>
 
+<p align="center">
+  <a href="https://docs.python.org/3.8/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python" alt="Python Version">
+  </a>
+  <a href="https://docs.python.org/3.9/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.9-blue?style=for-the-badge&logo=python" alt="Python Version">
+  </a>
+  <a href="https://docs.python.org/3.10/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python" alt="Python Version">
+  </a>
+  <a href="https://docs.python.org/3.11/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" alt="Python Version">
+  </a>
+  <a href="https://docs.python.org/3.12/" target="_blank">
+    <img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python" alt="Python Version">
+  </a>
+</p>
+
+
 # Airtrain SDK
 
 This repository holds the SDK for interacting with
