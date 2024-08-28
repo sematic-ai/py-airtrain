@@ -12,7 +12,7 @@ test-release: wheel
 	uvx twine upload --repository testpypi dist/*airtrain*.whl
 
 .PHONY: release
-test-release: wheel
+release: wheel
 	uvx twine check dist/*airtrain*.whl
 	uvx twine upload dist/*airtrain*.whl
 
