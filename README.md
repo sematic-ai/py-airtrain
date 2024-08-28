@@ -4,25 +4,25 @@
 
 <p align="center">
   <a href="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml?query=branch%3Amain+" target="_blank">
-    <img height="20px" src="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status">
+    <img height="25px" src="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status">
   </a>
   <a href="https://airtrain.ai" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Made_by-Airtrain_🚀-blue?style=for-the-badge&logo=none" alt="Made by Airtrain">
+    <img height="25px" src="https://img.shields.io/badge/Made_by-Airtrain_🚀-blue?style=for-the-badge&logo=none" alt="Made by Airtrain">
   </a>
   <a href="https://docs.python.org/3.8/" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python" alt="Python Version">
+    <img height="25px" src="https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
   <a href="https://docs.python.org/3.9/" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Python-3.9-blue?style=for-the-badge&logo=python" alt="Python Version">
+    <img height="25px" src="https://img.shields.io/badge/Python-3.9-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
   <a href="https://docs.python.org/3.10/" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python" alt="Python Version">
+    <img height="25px" src="https://img.shields.io/badge/Python-3.10-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
   <a href="https://docs.python.org/3.11/" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" alt="Python Version">
+    <img height="25px" src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
   <a href="https://docs.python.org/3.12/" target="_blank">
-    <img height="20px" src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python" alt="Python Version">
+    <img height="25px" src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge&logo=python" alt="Python Version">
   </a>
 </p>
 
