@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://airtrain.ai" target="_blank">
-    <img src="https://img.shields.io/badge/Made_by-Airtrain_🚀-E19632?style=for-the-badge&logo=none" alt="Made by Airtrain">
+    <img src="https://img.shields.io/badge/Made_by-Airtrain_🚀-blue?style=for-the-badge&logo=none" alt="Made by Airtrain">
   </a>
   <a href="https://docs.python.org/3.8/" target="_blank">
     <img src="https://img.shields.io/badge/Python-3.8-blue?style=for-the-badge&logo=python" alt="Python Version">
