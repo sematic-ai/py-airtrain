@@ -6,6 +6,9 @@
   <a href="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml?query=branch%3Amain+" target="_blank">
     <img height="30px" src="https://github.com/sematic-ai/py-airtrain/actions/workflows/ci.yaml/badge.svg?branch=main" alt="CI status">
   </a>
+  <a href="./LICENSE" target="_blank">
+    <img height="30px" src="https://img.shields.io/pypi/l/sematic?style=for-the-badge" alt="License">
+  </a>
   <a href="https://airtrain.ai" target="_blank">
     <img height="30px" src="https://img.shields.io/badge/Made_by-Airtrain_🚀-blue?style=for-the-badge&logo=none" alt="Made by Airtrain">
   </a>
