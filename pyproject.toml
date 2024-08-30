@@ -1,0 +1,75 @@
+[project]
+name = "airtrain"
+description = "SDK for interacting with https://airtrain.ai"
+version = "0.0.1"
+requires-python = ">=3.8"
+authors = [
+  {email = "support@airtrain.ai"},
+]
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+  "httpx>=0.25.0",
+  "pyarrow>=13.0.0",
+  
+  # pyarrow requires numpy. Numpy version support is a bit
+  # complicated and isn't handled well transiently. This makes
+  # sure we support the broadest numpy dependency set possible.
+  "numpy>=1.26.0; python_version >= '3.12'",
+  "numpy<=1.24.4; python_version == '3.8'",
+  "numpy>=1.19.3; python_version >= '3.9'",
+  
+  "airtrain",
+]
+
+classifiers = [
+  "License :: OSI Approved :: Apache Software License",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Typing :: Typed",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+[tool.uv]
+dev-dependencies = [
+  "mypy==1.11.1",
+  "ruff-lsp==0.0.35",
+  "python-lsp-ruff>=2.2.2",
+  "python-lsp-server>=1.11.0",
+  "pytest==7.4.0",
+]
+
+[tool.uv.sources]
+airtrain = { workspace = true }
+
+[project.urls]
+Homepage = "https://airtrain.ai"
+Documentation = "https://docs.airtrain.ai/"
+
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 90
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["airtrain"]
+
+# Use a single line after each import block.
+lines-after-imports = 2
+
+[tool.pylsp.plugins.ruff]
+enabled = true
+
+[[tool.mypy.overrides]]
+module = "airtrain.*"
+ignore_missing_imports = true
