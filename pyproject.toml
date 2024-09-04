@@ -1,5 +1,5 @@
 [project]
-name = "airtrain"
+name = "airtrain-py"
 description = "SDK for interacting with https://airtrain.ai"
 version = "0.0.1"
 requires-python = ">=3.8"
@@ -32,6 +32,16 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
 ]
+
+[project.optional-dependencies]
+pandas = [
+  "pandas>=1.0.0; python_version < '3.12'",
+  "pandas>=2.0.0; python_version >= '3.12'",
+]
+polars = [
+  "polars>=0.19.0",
+]
+all = ["airtrain-py[pandas,polars]"]
 
 [tool.uv]
 dev-dependencies = [
@@ -79,4 +89,16 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "pyarrow.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pandas.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "polars.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
 ignore_missing_imports = true
