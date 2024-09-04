@@ -28,7 +28,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "airtrain", editable = "." },
     { name = "httpx", specifier = ">=0.25.0" },
     { name = "numpy", marker = "python_full_version == '3.8.*'", specifier = "<=1.24.4" },
     { name = "numpy", marker = "python_full_version >= '3.9'", specifier = ">=1.19.3" },
