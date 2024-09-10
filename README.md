@@ -56,6 +56,7 @@ The following are available extras:
 
 - `pandas`
 - `polars`
+- `llama-index`
 
 ## Usage
 

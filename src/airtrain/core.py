@@ -186,6 +186,7 @@ def upload_from_arrow_tables(
                 table, embedding_column, embedding_dim
             )
         table = table[: limit - size]
+        table = _remove_illegal_parquet_types(table)
 
         upload_buffer = io.BytesIO()
         pq.write_table(table, upload_buffer)
@@ -250,3 +251,42 @@ def _batched(iterable: Iterable[T], n: int) -> Iterable[Tuple[T, ...]]:
         if len(batch) == 0:
             break
         yield batch
+
+
+def _remove_illegal_parquet_types(table: pa.Table) -> pa.Table:
+    schema = table.schema
+    for name in schema.names:
+        try:
+            _assert_can_be_written_to_parquet(schema.field(name).type, [name])
+        except TypeError as e:
+            logger.warning(
+                "Column '%s' cannot be written to parquet; skipping: %s",
+                name,
+                e,
+            )
+            table = table.drop_columns([name])
+    return table
+
+
+def _assert_can_be_written_to_parquet(
+    arrow_type: pa.DataType, field_path: List[str]
+) -> None:
+    field_path_str = " -> ".join(field_path)
+    if pa.types.is_struct(arrow_type):
+        if arrow_type.num_fields == 0:
+            raise TypeError(
+                f"Cannot write struct with no fields to Parquet. "
+                f"Consider removing these values or passing an explicit schema "
+                f"with the struct as a map type. "
+                f"Offending struct at: {field_path_str}"
+            )
+        for i_field in range(0, arrow_type.num_fields):
+            field = arrow_type.field(i_field)
+            _assert_can_be_written_to_parquet(field.type, field_path + [field.name])
+    if pa.types.is_list(arrow_type) or pa.types.is_large_list(arrow_type):
+        _assert_can_be_written_to_parquet(arrow_type.value_type, field_path + ["[...]"])
+    if pa.types.is_map(arrow_type):
+        _assert_can_be_written_to_parquet(
+            arrow_type.key_type, field_path + ["keys()[...]"]
+        )
+        _assert_can_be_written_to_parquet(arrow_type.item_type, field_path + ["[...]"])
