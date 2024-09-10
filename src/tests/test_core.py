@@ -226,6 +226,13 @@ ARROW_TO_PARQUET_TESTS = [
     ),
     (pa.map_(pa.struct([]), pa.bool_()), "keys()[...]"),
     (pa.map_(pa.bool_(), pa.struct([])), " [...]"),
+    (
+        pa.union(
+            [pa.field("a", pa.int16()), pa.field("b", pa.float16())],
+            mode=pa.lib.UnionMode_DENSE,
+        ),
+        "Cannot serialize arrow union to Parquet.",
+    ),
 ]
 
 

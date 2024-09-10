@@ -272,6 +272,15 @@ def _assert_can_be_written_to_parquet(
     arrow_type: pa.DataType, field_path: List[str]
 ) -> None:
     field_path_str = " -> ".join(field_path)
+    if pa.types.is_union(arrow_type):
+        # Arrow does indeed forbid writing unions to parquet,
+        # but FWIW they aren't logically equivalent to python's
+        # Union[T1, T2, ...]
+        raise TypeError(
+            f"Cannot serialize arrow union to Parquet. "
+            f"Consider removing these values. "
+            f"Offending union at: {field_path_str}"
+        )
     if pa.types.is_struct(arrow_type):
         if arrow_type.num_fields == 0:
             raise TypeError(
