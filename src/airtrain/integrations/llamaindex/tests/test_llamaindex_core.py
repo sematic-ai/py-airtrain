@@ -24,8 +24,20 @@ def test_upload_from_nodes(mock_client: MockAirtrainClient):  # noqa: F811
     assert table is not None
     assert table.shape[0] == len(nodes)
     assert all(isinstance(id_, str) for id_ in table["id_"].to_pylist())
-    assert {"text", "mimetype"}.issubset(
-        set(table.column_names)
-    ), f"Expected keys not found in: {table.column_names}"
     assert table["text"].to_pylist() == ["hello", "world"]
-    assert table["mimetype"].to_pylist() == ["text/plain", "text/plain"]
+
+    # Not all versions of llamaindex have mimetype.
+    if "mimetype" in table.column_names:
+        assert table["mimetype"].to_pylist() == ["text/plain", "text/plain"]
+    assert table["relationships.NodeRelationship.NEXT.class_name"].to_pylist() == [
+        "RelatedNodeInfo",
+        None,
+    ]
+    assert table["relationships.NodeRelationship.PREVIOUS.node_id"].to_pylist() == [
+        None,
+        nodes[0].node_id,
+    ]
+    assert table["relationships.NodeRelationship.NEXT.node_id"].to_pylist() == [
+        nodes[1].node_id,
+        None,
+    ]
