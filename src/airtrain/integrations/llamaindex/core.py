@@ -1,3 +1,5 @@
+import logging
+import sys
 from itertools import chain
 from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
 
@@ -5,6 +7,18 @@ from llama_index.core.schema import BaseNode
 
 from airtrain.core import CreationArgs, DatasetMetadata, Unpack, upload_from_dicts
 
+
+logger = logging.getLogger(__name__)
+
+
+if sys.version_info < (3, 11):
+    # My theory is that this fails below 3.11 because of some change in what
+    # pydantic can do to serialize to dicts below that version. This theory is
+    # as-yet unverified, however.
+    logger.warning(
+        "Airtrain can extract more information from LlamaIndex data when "
+        "using python versions >=3.11. Consider upgrading if possible."
+    )
 
 _TRANSFORM_COLUMNS: Dict[str, Callable[[Any], Union[str, Dict[str, str]]]] = {
     "relationships": lambda r: _flatten(r, "relationships"),

@@ -29,9 +29,6 @@ def test_upload_from_nodes(mock_client: MockAirtrainClient):  # noqa: F811
     assert table["text"].to_pylist() == ["hello", "world"]
 
     if sys.version_info >= (3, 11):
-        # My theory is that this fails below 3.11 because of some change in what
-        # pydantic can do to serialize to dicts below that version. This theory is
-        # as-yet unverified, however.
         if "mimetype" in table.column_names:
             assert table["mimetype"].to_pylist() == ["text/plain", "text/plain"]
         assert table["relationships.NodeRelationship.NEXT.class_name"].to_pylist() == [
