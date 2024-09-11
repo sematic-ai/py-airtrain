@@ -24,5 +24,6 @@ def test_upload_from_nodes(mock_client: MockAirtrainClient):  # noqa: F811
     assert table is not None
     assert table.shape[0] == len(nodes)
     assert all(isinstance(id_, str) for id_ in table["id_"].to_pylist())
+    assert {"text", "mimetype"}.issubset(set(table.column_names))
     assert table["text"].to_pylist() == ["hello", "world"]
     assert table["mimetype"].to_pylist() == ["text/plain", "text/plain"]
