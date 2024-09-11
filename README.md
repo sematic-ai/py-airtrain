@@ -171,3 +171,37 @@ table = pa.table({"foo": [1, 2, 3], "bar": ["a", "b", "c"]})
 
 url = at.upload_from_arrow_tables([table], name="My Arrow Dataset").url
 ```
+
+
+#### LlamaIndex
+
+```python
+from llama_index.readers.github import GithubRepositoryReader, GithubClient
+from llama_index.core.node_parser import (
+    SentenceSplitter,
+    SemanticSplitterNodeParser,
+)
+from llama_index.embeddings.openai import OpenAIEmbedding
+
+# Data does not have to come from GitHub; this is for illustrative purposes.
+github_client = GithubClient(...)
+documents = GithubRepositoryReader(...).load_data(branch=branch)
+
+# You can upload documents directly. In this case Airtrain will generate embeddings
+result = at.upload_from_llama_nodes(
+    nodes,
+    name="My Document Dataset",
+)
+print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
+
+# Or you can chunk and/or embed it first. Airtrain will use the embeddings
+# you created via LlamaIndex.
+embed_model = OpenAIEmbedding()
+splitter = SemanticSplitterNodeParser(...)
+nodes = splitter.get_nodes_from_documents(documents)
+result = upload_from_llama_nodes(
+    nodes,
+    name="My embedded RAG Dataset",
+)
+print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
+```

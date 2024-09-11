@@ -29,6 +29,23 @@ _TRANSFORM_COLUMNS: Dict[str, Callable[[Any], Union[str, Dict[str, str]]]] = {
 def upload_from_llama_nodes(
     data: Iterable[BaseNode], **kwargs: Unpack[CreationArgs]
 ) -> DatasetMetadata:
+    """Upload an Airtrain dataset from the provided LlamaIndex nodes.
+
+    Parameters
+    ----------
+    data:
+        Nodes may be from documents, chunks, or anything else that results
+        in instances of `BaseNode`.  Attributes of the nodes will be treated
+        as columns in the resulting Airtrain dataset. If present (and python
+        version is >= 3.11), the relationships and metadata for the node
+        will be flattened into multiple columns of the resulting dataset.
+    kwargs:
+        See `upload_from_arrow_tables` for other arguments.
+
+    Returns
+    -------
+    A DatasetMetadata object summarizing the created dataset.
+    """
     data_as_iter = iter(data)
     try:
         first_node = next(data_as_iter)
