@@ -84,6 +84,14 @@ class AirtrainClient:
                 "function airtrain.set_api_key"
             )
 
+    def dataset_dashboard_url(self, dataset_id: str) -> str:
+        """Get the webapp URL for a dataset, given its id."""
+        api_url = self._base_url
+        app_url = api_url.replace("://api.dev", "://airtrain.dev").replace(
+            "://api.", "://app."
+        )
+        return f"{app_url}/dataset/{dataset_id}"
+
     def trigger_dataset_ingest(self, dataset_id: str) -> TriggerIngestResponse:
         """Wraps: POST /dataset/[id]/ingest"""
         response = self._post_json(url_path=f"dataset/{dataset_id}/ingest", content={})
