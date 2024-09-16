@@ -27,7 +27,7 @@ py-prep:
 
 .PHONY: sync
 sync:
-	uv sync
+	uv sync --extra all
 
 .PHONY: fix
 fix:
@@ -42,4 +42,10 @@ lint:
 
 .PHONY: test
 test:
+	uv run pytest ./
+
+.PHONY: ci-test
+ci-test:
+	uv sync --extra polars
+	uv pip install pandas # uv seems to stall if py 3.12 installs this as an extra
 	uv run pytest ./
