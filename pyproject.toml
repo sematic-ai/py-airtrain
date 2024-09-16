@@ -2,7 +2,7 @@
 name = "airtrain-py"
 description = "SDK for interacting with https://airtrain.ai"
 version = "0.0.1"
-requires-python = ">=3.8"
+requires-python = ">=3.8.1, <4.0"
 authors = [
   {email = "support@airtrain.ai"},
 ]
@@ -41,7 +41,10 @@ pandas = [
 polars = [
   "polars>=0.19.0",
 ]
-all = ["airtrain-py[pandas,polars]"]
+llama-index = [
+  "llama-index-core>=0.10.44",
+]
+all = ["airtrain-py[pandas,polars,llama-index]"]
 
 [tool.uv]
 dev-dependencies = [
@@ -101,4 +104,8 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "tests.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "llama_index.*"
 ignore_missing_imports = true

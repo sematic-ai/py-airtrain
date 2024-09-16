@@ -3,7 +3,13 @@ from itertools import count
 import pyarrow as pa
 import pytest
 
-from airtrain.core import DatasetMetadata, upload_from_arrow_tables, upload_from_dicts
+from airtrain.core import (
+    DatasetMetadata,
+    upload_from_arrow_tables,
+    upload_from_dicts,
+    _assert_can_be_written_to_parquet,
+    _remove_illegal_parquet_types,
+)
 from tests.fixtures import MockAirtrainClient, mock_client  # noqa: F401
 
 
@@ -159,3 +165,89 @@ def test_upload_from_mismatched_tables(mock_client: MockAirtrainClient):  # noqa
 
     with pytest.raises(ValueError):
         upload_from_arrow_tables([table_1, table_2], name="My Arrow")
+
+
+def test_remove_illegal_parquet_types():
+    table = pa.table(
+        {
+            "foo": [1, 2, 3],
+            "bar": [{}, {}, {}],
+            "baz": [
+                [{"k": "v"}],
+                [{"k": "v"}, {"k": "v"}],
+                [{"k": "v"}, {"k": "v"}, {"k": "v"}],
+            ],
+            "qux": [[{}], [{}, {}], [{}, {}, {}]],
+            "lorem": [{"a": {"b": "c"}}, {"a": {"b": "c"}}, {"a": {"b": "c"}}],
+            "ipsum": [{"a": {}}, {"a": {}}, {"a": {}}],
+        }
+    )
+    cleaned = _remove_illegal_parquet_types(table)
+    assert cleaned.schema.names == ["foo", "baz", "lorem"]
+
+
+ARROW_TO_PARQUET_TESTS = [
+    (pa.string(), None),
+    (pa.list_(pa.string()), None),
+    (pa.list_(pa.string(), 4), None),
+    (pa.large_list(pa.string()), None),
+    (
+        pa.struct(
+            [
+                ("foo", pa.string()),
+                (
+                    "bar",
+                    pa.list_(
+                        pa.struct(
+                            [
+                                ("baz", pa.int16()),
+                                ("qux", pa.bool_()),
+                            ]
+                        )
+                    ),
+                ),
+            ]
+        ),
+        None,
+    ),
+    (pa.map_(pa.struct([("a", pa.bool_())]), pa.bool_()), None),
+    (pa.map_(pa.bool_(), pa.struct([("a", pa.bool_())])), None),
+    (pa.struct([]), "Cannot write struct with no fields to Parquet"),
+    (pa.list_(pa.struct([])), "[...]"),
+    (pa.large_list(pa.struct([])), "[...]"),
+    (
+        pa.struct(
+            [
+                ("foo", pa.string()),
+                ("bar", pa.list_(pa.struct([]))),
+            ]
+        ),
+        "bar -> [...]",
+    ),
+    (pa.map_(pa.struct([]), pa.bool_()), "keys()[...]"),
+    (pa.map_(pa.bool_(), pa.struct([])), " [...]"),
+    (
+        pa.union(
+            [pa.field("a", pa.int16()), pa.field("b", pa.float16())],
+            mode=pa.lib.UnionMode_DENSE,
+        ),
+        "Cannot serialize arrow union to Parquet.",
+    ),
+]
+
+
+@pytest.mark.parametrize("arrow_type, expected_error_substring", ARROW_TO_PARQUET_TESTS)
+def test_assert_can_be_written_to_parquet(arrow_type, expected_error_substring):
+    succeeded = False
+    try:
+        _assert_can_be_written_to_parquet(arrow_type, [])
+        succeeded = True
+    except TypeError as e:
+        if expected_error_substring is None:
+            raise
+        assert expected_error_substring in str(e)
+
+    if expected_error_substring is not None and succeeded:
+        raise AssertionError(
+            f"Expected error '... {expected_error_substring} ...' did not occur."
+        )

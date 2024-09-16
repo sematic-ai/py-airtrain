@@ -46,6 +46,6 @@ test:
 
 .PHONY: ci-test
 ci-test:
-	uv sync --extra polars
+	uv sync --extra polars --extra llama-index
 	uv pip install pandas # uv seems to stall if py 3.12 installs this as an extra
 	uv run pytest ./
