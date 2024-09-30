@@ -175,6 +175,9 @@ url = at.upload_from_arrow_tables([table], name="My Arrow Dataset").url
 
 #### LlamaIndex
 
+Note that these examples also involve installing additional Llama Index
+integrations.
+
 ```python
 from llama_index.readers.github import GithubRepositoryReader, GithubClient
 from llama_index.core.node_parser import (
