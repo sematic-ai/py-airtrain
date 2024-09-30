@@ -1,7 +1,7 @@
 [project]
 name = "airtrain-py"
 description = "SDK for interacting with https://airtrain.ai"
-version = "0.1.1"
+version = "0.1.2"
 requires-python = ">=3.8.1, <4.0"
 authors = [
   {email = "support@airtrain.ai"},
@@ -61,6 +61,7 @@ airtrain = { workspace = true }
 [project.urls]
 Homepage = "https://airtrain.ai"
 Documentation = "https://docs.airtrain.ai/"
+Repository = "https://github.com/sematic-ai/py-airtrain"
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]
