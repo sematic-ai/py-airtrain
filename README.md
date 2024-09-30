@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="100px">
+  <img src="https://raw.githubusercontent.com/sematic-ai/py-airtrain/refs/heads/main/images/airtrain-logo.png" alt="Airtrain Ai Logo" style="vertical-align: middle; display: inline-block;" width="100px">
 </div>
 
 <p align="center">
