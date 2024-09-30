@@ -175,6 +175,9 @@ url = at.upload_from_arrow_tables([table], name="My Arrow Dataset").url
 
 #### LlamaIndex
 
+Note that these examples also involve installing additional Llama Index
+integrations.
+
 ```python
 from llama_index.readers.github import GithubRepositoryReader, GithubClient
 from llama_index.core.node_parser import (
@@ -204,4 +207,108 @@ result = upload_from_llama_nodes(
     name="My embedded RAG Dataset",
 )
 print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
+```
+
+Alternatively, using the
+["Workflows"](https://docs.llamaindex.ai/en/stable/module_guides/workflow/)
+API:
+
+```python
+import asyncio
+
+from llama_index.core.schema import Node
+from llama_index.core.workflow import (
+    Context,
+    Event,
+    StartEvent,
+    StopEvent,
+    Workflow,
+    step,
+)
+from llama_index.readers.web import AsyncWebPageReader
+
+from airtrain import DatasetMetadata, upload_from_llama_nodes
+
+
+URLS = [
+    "https://news.ycombinator.com/item?id=41694044",
+    "https://news.ycombinator.com/item?id=41696046",
+    "https://news.ycombinator.com/item?id=41693087",
+    "https://news.ycombinator.com/item?id=41695756",
+    "https://news.ycombinator.com/item?id=41666269",
+    "https://news.ycombinator.com/item?id=41697137",
+    "https://news.ycombinator.com/item?id=41695840",
+    "https://news.ycombinator.com/item?id=41694712",
+    "https://news.ycombinator.com/item?id=41690302",
+    "https://news.ycombinator.com/item?id=41695076",
+    "https://news.ycombinator.com/item?id=41669747",
+    "https://news.ycombinator.com/item?id=41694504",
+    "https://news.ycombinator.com/item?id=41697032",
+    "https://news.ycombinator.com/item?id=41694025",
+    "https://news.ycombinator.com/item?id=41652935",
+    "https://news.ycombinator.com/item?id=41693979",
+    "https://news.ycombinator.com/item?id=41696236",
+    "https://news.ycombinator.com/item?id=41696434",
+    "https://news.ycombinator.com/item?id=41688469",
+    "https://news.ycombinator.com/item?id=41646782",
+    "https://news.ycombinator.com/item?id=41689332",
+    "https://news.ycombinator.com/item?id=41688018",
+    "https://news.ycombinator.com/item?id=41668896",
+    "https://news.ycombinator.com/item?id=41690087",
+    "https://news.ycombinator.com/item?id=41679497",
+    "https://news.ycombinator.com/item?id=41687739",
+    "https://news.ycombinator.com/item?id=41686722",
+    "https://news.ycombinator.com/item?id=41689138",
+    "https://news.ycombinator.com/item?id=41691530"
+]
+
+
+class CompletedDocumentRetrievalEvent(Event):
+    name: str
+    documents: list[Node]
+
+class AirtrainDocumentDatasetEvent(Event):
+    metadata: DatasetMetadata
+
+
+class IngestToAirtrainWorkflow(Workflow):
+    @step
+    async def ingest_documents(
+        self, ctx: Context, ev: StartEvent
+    ) -> CompletedDocumentRetrievalEvent | None:
+        if not ev.get("urls"):
+            return None
+        reader = AsyncWebPageReader(html_to_text=True)
+        documents = await reader.aload_data(urls=ev.get("urls"))
+        return CompletedDocumentRetrievalEvent(name=ev.get("name"), documents=documents)
+
+    @step
+    async def ingest_documents_to_airtrain(
+        self, ctx: Context, ev: CompletedDocumentRetrievalEvent
+    ) -> AirtrainDocumentDatasetEvent | None:
+        if not isinstance(ev, CompletedDocumentRetrievalEvent):
+            return None
+
+        dataset_meta = upload_from_llama_nodes(ev.documents, name=ev.name)
+        return AirtrainDocumentDatasetEvent(metadata=dataset_meta)
+
+    @step
+    async def complete_workflow(
+        self, ctx: Context, ev: AirtrainDocumentDatasetEvent
+    ) -> None | StopEvent:
+        if not isinstance(ev, AirtrainDocumentDatasetEvent):
+            return None
+        return StopEvent(result=ev.metadata)
+
+
+async def main() -> None:
+    workflow = IngestToAirtrainWorkflow()
+    result = await workflow.run(
+        name="My HN Discussions Dataset", urls=URLS,
+    )
+    print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
