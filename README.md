@@ -206,7 +206,9 @@ result = upload_from_llama_nodes(
 print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
 ```
 
-Alternatively, using the "Workflows" API:
+Alternatively, using the
+["Workflows"](https://docs.llamaindex.ai/en/stable/module_guides/workflow/)
+API:
 
 ```python
 import asyncio
