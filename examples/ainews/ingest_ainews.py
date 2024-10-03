@@ -1,16 +1,17 @@
 import regex as re
 import time
+from itertools import chain
 
 import airtrain as at
 import httpx
 from bs4 import BeautifulSoup
-from llama_index.core.node_parser import SemanticSplitterNodeParser
-from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.readers.string_iterable import StringIterableReader
-from markdownify import markdownify
+from llama_index.core.node_parser.file.markdown import MarkdownNodeParser
+from markdownify import MarkdownConverter
 
 URL_TEMPLATE = "https://buttondown.com/ainews/archive/?page={page_number}"
-MAX_URLS = 1000
+DELAY_BETWEEN_PAGES = 0.5
+MAX_URLS = 3
 
 http_client = httpx.Client()
 
@@ -54,47 +55,63 @@ def get_archive_list_page(page_num: int) -> tuple[list[str], int | None]:
 
 def http_get(url: str) -> str:
     n_tries = 5
+    sleep_interval = 1
     while n_tries > 0:
-        response = http_client.get(url)
-        if response.status_code != 200:
-            time.sleep(1)
+        try:
+            response = http_client.get(url)
+            if response.status_code != 200:
+                raise RuntimeError("Bad status code")
+        except Exception:
+            time.sleep(sleep_interval)
+            sleep_interval *= 2
         return response.text
     raise RuntimeError(
         f"Could not get URL {url}."
         "Status code: {response.status_code}. Text: {response.text}"
     )
 
+
 def get_newsletter_text(url: str) -> str:
     raw_text = http_get(url)
     page = BeautifulSoup(raw_text, 'html.parser')
-    content = str(page.find(class_="email-body-content"))
-    prettified = markdownify(content)
+    content = page.find(class_="email-body-content")
+    prettified = MarkdownConverter(heading_style="ATX").convert_soup(content)
     return prettified
 
 
+def get_newsletter_texts(urls: list[str]) -> list[str]:
+    texts: list[str] = []
+    for i, url in enumerate(urls):
+        print(f"Getting url {i + 1}/{len(urls)}")
+        texts.append(get_newsletter_text(url))
+        time.sleep(DELAY_BETWEEN_PAGES)
+    return texts
+
+
 def main() -> None:
+    start_time = time.time()
+    print("Getting newsletter urls")
     urls = get_urls()
     print(f"Will ingest {len(urls)} urls")
     reader = StringIterableReader()
-    documents = reader.load_data(
-        texts=(get_newsletter_text(url) for url in urls)
-    )
+    newsletter_texts = get_newsletter_texts(urls)
+    documents = reader.load_data(texts=newsletter_texts)
     for url, document in zip(urls, documents):
         document.metadata["source"] = url
     result = at.upload_from_llama_nodes(documents, name="AI News Newsletters")
     print(f"Uploaded {result.size} rows to '{result.name}'. View at: {result.url}")
 
-    embed_model = OpenAIEmbedding()
-    splitter = SemanticSplitterNodeParser(
-        buffer_size=1, breakpoint_percentile_threshold=95, embed_model=embed_model
-    )
-    nodes = splitter.get_nodes_from_documents(documents)
+    print("Splitting documents")
+    splitter = MarkdownNodeParser()
+    nodes = list(chain(*[splitter.get_nodes_from_node(doc) for doc in documents]))
     print(f"Will upload {len(nodes)} newsletter chunks.")
     result = at.upload_from_llama_nodes(
         nodes,
         name="AI News Newsletter Chunks",
     )
     print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
+    duration = time.time() - start_time
+    print(f"Completed in {duration} s")
 
 
 if __name__ == "__main__":
