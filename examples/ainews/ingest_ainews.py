@@ -11,13 +11,14 @@ from markdownify import MarkdownConverter
 
 URL_TEMPLATE = "https://buttondown.com/ainews/archive/?page={page_number}"
 DELAY_BETWEEN_PAGES = 0.5
-MAX_URLS = 3
+MAX_URLS = 1000
 
 http_client = httpx.Client()
 
+
 def get_urls() -> list[str]:
     """Get the URLs for the pages containing newsletter content"""
-    search_page_index= 1
+    search_page_index = 1
     pages: list[str] = []
     while search_page_index is not None:
         new_pages, search_page_index = get_archive_list_page(search_page_index)
@@ -28,7 +29,6 @@ def get_urls() -> list[str]:
     # Exclude some early newsletters that were only included to test the system.
     pages = list(filter(lambda url: "newsletter-test" not in url, pages))
     return pages[:MAX_URLS]
-    
 
 
 def get_archive_list_page(page_num: int) -> tuple[list[str], int | None]:
@@ -38,7 +38,7 @@ def get_archive_list_page(page_num: int) -> tuple[list[str], int | None]:
     remaining search results.
     """
     text = http_get(URL_TEMPLATE.format(page_number=page_num))
-    archive_page = BeautifulSoup(text, 'html.parser')
+    archive_page = BeautifulSoup(text, "html.parser")
     link_elements = archive_page.find(class_="email-list").find_all("a")
     if link_elements is None:
         raise ValueError("Unexpected page structure")
@@ -73,7 +73,7 @@ def http_get(url: str) -> str:
 
 def get_newsletter_text(url: str) -> str:
     raw_text = http_get(url)
-    page = BeautifulSoup(raw_text, 'html.parser')
+    page = BeautifulSoup(raw_text, "html.parser")
     content = page.find(class_="email-body-content")
     prettified = MarkdownConverter(heading_style="ATX").convert_soup(content)
     return prettified
