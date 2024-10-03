@@ -2,9 +2,15 @@ import regex as re
 import time
 
 import airtrain as at
-from llama_index.readers.web import RssReader
+import httpx
+from bs4 import BeautifulSoup
+from llama_index.core.node_parser import SemanticSplitterNodeParser
+from llama_index.embeddings.openai import OpenAIEmbedding
+from llama_index.readers.string_iterable import StringIterableReader
+from markdownify import markdownify
 
-DEFAULT_URL = "https://buttondown.com/ainews/rss"
+URL_TEMPLATE = "https://buttondown.com/ainews/archive/?page={page_number}"
+MAX_URLS = 1000
 
 http_client = httpx.Client()
 
@@ -15,10 +21,12 @@ def get_urls() -> list[str]:
     while search_page_index is not None:
         new_pages, search_page_index = get_archive_list_page(search_page_index)
         pages.extend(new_pages)
+        if len(pages) > MAX_URLS:
+            break
 
     # Exclude some early newsletters that were only included to test the system.
     pages = list(filter(lambda url: "newsletter-test" not in url, pages))
-    return pages
+    return pages[:MAX_URLS]
     
 
 
@@ -56,10 +64,37 @@ def http_get(url: str) -> str:
         "Status code: {response.status_code}. Text: {response.text}"
     )
 
+def get_newsletter_text(url: str) -> str:
+    raw_text = http_get(url)
+    page = BeautifulSoup(raw_text, 'html.parser')
+    content = str(page.find(class_="email-body-content"))
+    prettified = markdownify(content)
+    return prettified
+
 
 def main() -> None:
     urls = get_urls()
     print(f"Will ingest {len(urls)} urls")
+    reader = StringIterableReader()
+    documents = reader.load_data(
+        texts=(get_newsletter_text(url) for url in urls)
+    )
+    for url, document in zip(urls, documents):
+        document.metadata["source"] = url
+    result = at.upload_from_llama_nodes(documents, name="AI News Newsletters")
+    print(f"Uploaded {result.size} rows to '{result.name}'. View at: {result.url}")
+
+    embed_model = OpenAIEmbedding()
+    splitter = SemanticSplitterNodeParser(
+        buffer_size=1, breakpoint_percentile_threshold=95, embed_model=embed_model
+    )
+    nodes = splitter.get_nodes_from_documents(documents)
+    print(f"Will upload {len(nodes)} newsletter chunks.")
+    result = at.upload_from_llama_nodes(
+        nodes,
+        name="AI News Newsletter Chunks",
+    )
+    print(f"Uploaded {result.size} rows to {result.name}. View at: {result.url}")
 
 
 if __name__ == "__main__":
