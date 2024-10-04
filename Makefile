@@ -23,7 +23,7 @@ py-prep:
 	rm -rf ".venv" || echo "No virtualenv yet"
 	uv venv --python $(PY_VERSION)
 	uv tool install --force ruff==0.6.1
-	uv add --editable .
+	uv pip install -e .
 
 .PHONY: sync
 sync:
