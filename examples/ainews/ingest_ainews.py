@@ -54,6 +54,7 @@ def get_archive_list_page(page_num: int) -> tuple[list[str], int | None]:
 
 
 def http_get(url: str) -> str:
+    """Perform an HTTP GET request, with retries, and return resulting raw text."""
     n_tries = 5
     sleep_interval = 1
     while n_tries > 0:
@@ -72,6 +73,7 @@ def http_get(url: str) -> str:
 
 
 def get_newsletter_text(url: str) -> str:
+    """Get text from a newsletter page & BeautifulSoup + markdownify to clean it"""
     raw_text = http_get(url)
     page = BeautifulSoup(raw_text, "html.parser")
     content = page.find(class_="email-body-content")
@@ -80,6 +82,7 @@ def get_newsletter_text(url: str) -> str:
 
 
 def get_newsletter_texts(urls: list[str]) -> list[str]:
+    """Get markdown text for all newsletters at the given URLs."""
     texts: list[str] = []
     for i, url in enumerate(urls):
         print(f"Getting url {i + 1}/{len(urls)}")
