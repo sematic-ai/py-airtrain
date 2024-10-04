@@ -23,7 +23,7 @@ py-prep:
 	rm -rf ".venv" || echo "No virtualenv yet"
 	uv venv --python $(PY_VERSION)
 	uv tool install --force ruff==0.6.1
-	uv add --editable .
+	uv pip install -e .
 
 .PHONY: sync
 sync:
@@ -46,6 +46,6 @@ test:
 
 .PHONY: ci-test
 ci-test:
-	uv sync --extra polars --extra llama-index
+	uv sync --extra all
 	uv pip install pandas # uv seems to stall if py 3.12 installs this as an extra
 	uv run pytest ./

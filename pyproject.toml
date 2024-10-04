@@ -44,16 +44,7 @@ polars = [
 llama-index = [
   "llama-index-core>=0.10.44",
 ]
-
-# Note: keep this up to date with the integration-specific deps.
-# Unfortunately there is no obvious way to do this automatically
-# without building something to do it.
-all = [
-  "pandas>=1.0.0; python_version < '3.12'",
-  "pandas>=2.0.0; python_version >= '3.12'",
-  "polars>=0.19.0",
-  "llama-index-core>=0.10.44",
-]
+all = ["airtrain-py[pandas,polars,llama-index]"]
 
 [tool.uv]
 dev-dependencies = [
