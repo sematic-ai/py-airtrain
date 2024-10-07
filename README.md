@@ -176,7 +176,9 @@ url = at.upload_from_arrow_tables([table], name="My Arrow Dataset").url
 #### LlamaIndex
 
 Note that these examples also involve installing additional Llama Index
-integrations.
+integrations. A more detailed example of using Airtrain + Llama Index
+can be found in the
+[Llama Index docs](https://docs.llamaindex.ai/en/stable/examples/cookbooks/airtrain/)
 
 ```python
 from llama_index.readers.github import GithubRepositoryReader, GithubClient
